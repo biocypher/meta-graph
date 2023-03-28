@@ -1,50 +1,41 @@
 from biocypher import BioCypher
-from template_package.adapters.example_adapter import (
-    ExampleAdapter,
-    ExampleAdapterNodeType,
-    ExampleAdapterEdgeType,
-    ExampleAdapterProteinField,
-    ExampleAdapterDiseaseField,
+from meta_graph.adapters.adapter import (
+    BioCypherMetaAdapter,
+    BioCypherMetaAdapterNodeType,
+    BioCypherMetaAdapterEdgeType,
+    BioCypherMetaAdapterIssueField,
 )
 
 # Instantiate the BioCypher interface
 # You can use `config/biocypher_config.yaml` to configure the framework or
 # supply settings via parameters below
-bc = BioCypher(
-    biocypher_config_path="config/biocypher_config.yaml",
-)
+bc = BioCypher()
 
 # Take a look at the ontology structure of the KG according to the schema
+bc._get_ontology()
 bc.show_ontology_structure()
 
 # Choose node types to include in the knowledge graph.
 # These are defined in the adapter (`adapter.py`).
 node_types = [
-    ExampleAdapterNodeType.PROTEIN,
-    ExampleAdapterNodeType.DISEASE,
+    BioCypherMetaAdapterNodeType.ISSUE,
 ]
 
 # Choose protein adapter fields to include in the knowledge graph.
 # These are defined in the adapter (`adapter.py`).
 node_fields = [
-    # Proteins
-    ExampleAdapterProteinField.ID,
-    ExampleAdapterProteinField.SEQUENCE,
-    ExampleAdapterProteinField.DESCRIPTION,
-    ExampleAdapterProteinField.TAXON,
-    # Diseases
-    ExampleAdapterDiseaseField.ID,
-    ExampleAdapterDiseaseField.NAME,
-    ExampleAdapterDiseaseField.DESCRIPTION,
+    # Issues
+    BioCypherMetaAdapterIssueField.NUMBER,
+    BioCypherMetaAdapterIssueField.TITLE,
+    BioCypherMetaAdapterIssueField.BODY,
 ]
 
 edge_types = [
-    ExampleAdapterEdgeType.PROTEIN_PROTEIN_INTERACTION,
-    ExampleAdapterEdgeType.PROTEIN_DISEASE_ASSOCIATION,
+    BioCypherMetaAdapterEdgeType.PART_OF,
 ]
 
 # Create a protein adapter instance
-adapter = ExampleAdapter(
+adapter = BioCypherMetaAdapter(
     node_types=node_types,
     node_fields=node_fields,
     edge_types=edge_types,
