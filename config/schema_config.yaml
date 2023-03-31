@@ -30,6 +30,11 @@ secondary input adapter:
   represented_as: node
   input_label: secondary input adapter
 
+mixed input adapter:
+  is_a: input adapter
+  represented_as: node
+  input_label: mixed input adapter
+
 ontology adapter:
   is_a: adapter
 

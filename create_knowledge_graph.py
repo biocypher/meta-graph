@@ -11,9 +11,6 @@ from meta_graph.adapters.adapter import (
 # supply settings via parameters below
 bc = BioCypher()
 
-# Take a look at the ontology structure of the KG according to the schema
-bc._get_ontology()
-bc.show_ontology_structure()
 
 # Choose node types to include in the knowledge graph.
 # These are defined in the adapter (`adapter.py`).
@@ -50,6 +47,5 @@ bc.write_edges(adapter.get_edges())
 # Write admin import statement
 bc.write_import_call()
 
-# Check output
-bc.log_duplicates()
-bc.log_missing_bl_types()
+# Summary
+bc.summary()

@@ -1,8 +1,6 @@
-import random
 import requests
 import gzip
 import json
-import string
 from enum import Enum, auto
 from itertools import chain
 from biocypher._logger import logger
