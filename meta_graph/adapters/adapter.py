@@ -322,7 +322,12 @@ class BioCypherMetaAdapter:
                 .get("pageInfo")
             )
 
-        return nodes
+        node_dict = {}
+
+        for node in nodes:
+            node_dict[node["id"]] = node
+
+        return node_dict
 
     def _process_nodes(self):
         """
@@ -350,10 +355,10 @@ class BioCypherMetaAdapter:
                 nodes.append((name, type, {}))
 
         # Individual cards
-        for item in self._items:
+        for key, value in self._items.items():
             fields = [
                 field
-                for field in item.get("fieldValues", {}).get("nodes", [])
+                for field in value.get("fieldValues", {}).get("nodes", [])
                 if field
             ]
 
@@ -361,29 +366,32 @@ class BioCypherMetaAdapter:
             for field in fields:
                 field_type = field["field"]["name"]
                 field_value = field.get("text") or field.get("name")
-                item[field_type] = field_value
+                value[field_type] = field_value
 
-            title = item.get("Title")
+            # add back to _items
+            self._items[key] = value
+
+            title = value.get("Title")
 
             if not title:
-                logger.warning(f"Item {item['id']} has no title.")
+                logger.warning(f"Item {value['id']} has no title.")
                 continue
 
             label = self._get_label(fields)
-            url = item.get("Resource URL")
-            number = "i" + str(item["content"]["number"])
+            url = value.get("Resource URL")
+            number = "i" + str(value["content"]["number"])
 
             nodes.append((number, label, {"name": title, "url": url}))
 
         # Edges to fields
-        for item in self._items:
+        for key, value in self._items.items():
             fields = [
                 field
-                for field in item.get("fieldValues", {}).get("nodes", [])
+                for field in value.get("fieldValues", {}).get("nodes", [])
                 if field
             ]
 
-            number = "i" + str(item["content"]["number"])
+            number = "i" + str(value["content"]["number"])
 
             for field in fields:
                 if field["field"]["name"] not in [
@@ -438,10 +446,10 @@ class BioCypherMetaAdapter:
 
         edges = []
 
-        for item in self._items:
-            uses = self._extract_uses(item["content"]["body"])
+        for key, value in self._items.items():
+            uses = self._extract_uses(value["content"]["body"])
 
-            parent = "i" + str(item["content"]["number"])
+            parent = "i" + str(value["content"]["number"])
 
             for use in uses:
                 if not use:
