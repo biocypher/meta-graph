@@ -357,14 +357,20 @@ class BioCypherMetaAdapter:
                 if field
             ]
 
-            title = self._get_title(fields)
+            # add fields to item
+            for field in fields:
+                field_type = field["field"]["name"]
+                field_value = field.get("text") or field.get("name")
+                item[field_type] = field_value
+
+            title = item.get("Title")
 
             if not title:
                 logger.warning(f"Item {item['id']} has no title.")
                 continue
 
             label = self._get_label(fields)
-            url = self._extract_url(fields)
+            url = item.get("Resource URL")
             number = "i" + str(item["content"]["number"])
 
             nodes.append((number, label, {"name": title, "url": url}))
@@ -392,17 +398,6 @@ class BioCypherMetaAdapter:
                 )
 
         return nodes
-
-    def _get_title(self, fields):
-        """
-        Get the title for the node.
-        """
-
-        for field in fields:
-            if field["field"]["name"] == "Title":
-                return field["text"]
-
-        return None
 
     def _get_label(self, labels):
         """
@@ -433,17 +428,6 @@ class BioCypherMetaAdapter:
         # concatenate
         return " ".join(concat)
 
-    def _extract_url(self, fields) -> str:
-        """
-        Extract the URL from the body of the item.
-        """
-
-        for field in fields:
-            if field["field"]["name"] == "Resource URL":
-                return field["text"]
-
-        return None
-
     def _process_edges(self):
         """
         Returns a list of edge tuples for edge types specified in the
@@ -466,6 +450,8 @@ class BioCypherMetaAdapter:
                 part = use.replace("#", "i")
 
                 edges.append((None, part, parent, "part of", {}))
+
+                # also connect pipelines to the adapter's data type
 
         return edges
 
