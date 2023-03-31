@@ -28,7 +28,6 @@ class BioCypherMetaAdapterIssueField(Enum):
     BODY = "body"
 
 
-
 class BioCypherMetaAdapterEdgeType(Enum):
     """
     Enum for the types of the protein adapter.
@@ -61,22 +60,39 @@ class BioCypherMetaAdapter:
         )
 
         self._download_data()
+        self._edges = self._process_edges()
+        self._nodes = self._process_nodes()
 
-        self.nodes = []
-        self.edges = []
+    def get_nodes(self) -> list:
+        """
+        Returns a list of node tuples for node types specified in the
+        adapter constructor.
 
+        Returns:
+            List of nodes.
+        """
+
+        return self._nodes
+
+    def get_edges(self):
+        """
+        Returns a list of edge tuples for edge types specified in the
+        adapter constructor.
+        """
+
+        return self._edges
 
     def _download_data(self):
         """
         Download data from the GitHub project page using the API.
         """
 
-        with gzip.open('config/token.txt.gz', 'rt') as f:
+        with gzip.open("config/token.txt.gz", "rt") as f:
             token = f.read()
 
         # Set the API endpoint and headers
-        url = 'https://api.github.com/graphql'
-        headers = {'Authorization': f'Bearer {token}'}
+        url = "https://api.github.com/graphql"
+        headers = {"Authorization": f"Bearer {token}"}
 
         # Get the project ID
         id_ = self._get_project_id(url, headers)
@@ -87,9 +103,8 @@ class BioCypherMetaAdapter:
         # Get the project items
         self._items = self._get_project_items(url, headers, id_)
 
-
     def _get_project_id(self, url: str, headers: dict) -> str:
-        query = '''
+        query = """
                 query{
                     organization(login: "biocypher"){
                         projectV2(number: 3) {
@@ -97,10 +112,10 @@ class BioCypherMetaAdapter:
                         }
                     }
                 }
-                '''
+                """
 
         # Set the request data as a dictionary
-        data = {'query': query}
+        data = {"query": query}
 
         # Send the API request
         response = requests.post(url, headers=headers, json=data)
@@ -109,11 +124,12 @@ class BioCypherMetaAdapter:
         response_json = json.loads(response.text)
 
         # Extract the data from the response JSON
-        data = response_json.get('data')
-        return data.get('organization').get('projectV2').get('id')
+        data = response_json.get("data")
+        return data.get("organization").get("projectV2").get("id")
 
     def _get_project_fields(self, url: str, headers: dict, id_: str) -> dict:
-        query = '''
+        query = (
+            """
                 query{
                     node(id: "%s") {
                         ... on ProjectV2 {
@@ -136,10 +152,12 @@ class BioCypherMetaAdapter:
                         }
                     }
                 }
-                ''' % id_
+                """
+            % id_
+        )
 
         # Set the request data as a dictionary
-        data = {'query': query}
+        data = {"query": query}
 
         # Send the API request
         response = requests.post(url, headers=headers, json=data)
@@ -148,14 +166,14 @@ class BioCypherMetaAdapter:
         response_json = json.loads(response.text)
 
         # Extract the data from the response JSON
-        data = response_json.get('data')
-        return data.get('node').get('fields').get('nodes')
+        data = response_json.get("data")
+        return data.get("node").get("fields").get("nodes")
 
     def _get_project_items(self, url: str, headers: dict, id_: str) -> dict:
-
         nodes = []
 
-        query = '''
+        query = (
+            """
                 query{
                   node(id: "%s") {
                     ... on ProjectV2 {
@@ -206,10 +224,12 @@ class BioCypherMetaAdapter:
                     }
                   }
                 }
-                ''' % id_
-        
+                """
+            % id_
+        )
+
         # Set the request data as a dictionary
-        data = {'query': query}
+        data = {"query": query}
 
         # Send the API request
         response = requests.post(url, headers=headers, json=data)
@@ -217,13 +237,17 @@ class BioCypherMetaAdapter:
         # Parse the response JSON
         response_json = json.loads(response.text)
 
-        nodes.extend(response_json.get('data').get('node').get('items').get('nodes'))
+        nodes.extend(
+            response_json.get("data").get("node").get("items").get("nodes")
+        )
 
         # Extract the data from the response JSON
-        pageInfo = response_json.get('data').get('node').get('items').get('pageInfo')
+        pageInfo = (
+            response_json.get("data").get("node").get("items").get("pageInfo")
+        )
 
-        while pageInfo.get('hasNextPage'):
-            next_query = '''
+        while pageInfo.get("hasNextPage"):
+            next_query = """
                             query{
                               node(id: "%s") {
                                 ... on ProjectV2 {
@@ -274,10 +298,13 @@ class BioCypherMetaAdapter:
                                 }
                               }
                             }
-                            ''' % (id_, pageInfo.get('endCursor'))
-            
+                            """ % (
+                id_,
+                pageInfo.get("endCursor"),
+            )
+
             # Set the request data as a dictionary
-            data = {'query': next_query}
+            data = {"query": next_query}
 
             # Send the API request
             response = requests.post(url, headers=headers, json=data)
@@ -285,14 +312,21 @@ class BioCypherMetaAdapter:
             # Parse the response JSON
             response_json = json.loads(response.text)
 
-            nodes.extend(response_json.get('data').get('node').get('items').get('nodes'))
+            nodes.extend(
+                response_json.get("data").get("node").get("items").get("nodes")
+            )
 
             # Extract the data from the response JSON
-            pageInfo = response_json.get('data').get('node').get('items').get('pageInfo')
+            pageInfo = (
+                response_json.get("data")
+                .get("node")
+                .get("items")
+                .get("pageInfo")
+            )
 
         return nodes
 
-    def get_nodes(self):
+    def _process_nodes(self):
         """
         Returns a list of node tuples for node types specified in the
         adapter constructor.
@@ -300,23 +334,30 @@ class BioCypherMetaAdapter:
 
         logger.info("Generating nodes.")
 
+        nodes = []
+
         # Fields
         for field in self._fields:
-            
-            if field['name'] not in ['Adapter Input Format', 'Resource Type', 'Data Type']:
+            if field["name"] not in [
+                "Adapter Input Format",
+                "Resource Type",
+                "Data Type",
+            ]:
                 continue
 
-            for option in field['options']:
-                
-                name = option['name'].lower()
-                type = field['name'].lower()
+            for option in field["options"]:
+                name = option["name"].lower()
+                type = field["name"].lower()
 
-                self.nodes.append((name, type, {}))
+                nodes.append((name, type, {}))
 
         # Individual cards
         for item in self._items:
-
-            fields = [field for field in item.get('fieldValues', {}).get('nodes', []) if field]
+            fields = [
+                field
+                for field in item.get("fieldValues", {}).get("nodes", [])
+                if field
+            ]
 
             title = self._get_title(fields)
 
@@ -326,55 +367,62 @@ class BioCypherMetaAdapter:
 
             label = self._get_label(fields)
             url = self._extract_url(fields)
-            number = "i" + str(item['content']['number'])
+            number = "i" + str(item["content"]["number"])
 
-            self.nodes.append((number, label, {'name': title, 'url': url}))
-
+            nodes.append((number, label, {"name": title, "url": url}))
 
         # Edges to fields
         for item in self._items:
+            fields = [
+                field
+                for field in item.get("fieldValues", {}).get("nodes", [])
+                if field
+            ]
 
-            fields = [field for field in item.get('fieldValues', {}).get('nodes', []) if field]
-
-            number = "i" + str(item['content']['number'])
+            number = "i" + str(item["content"]["number"])
 
             for field in fields:
-                if field['field']['name'] not in ['Adapter Input Format', 'Resource Type', 'Data Type']:
+                if field["field"]["name"] not in [
+                    "Adapter Input Format",
+                    "Resource Type",
+                    "Data Type",
+                ]:
                     continue
 
-                self.edges.append((None, number, field['name'].lower(), "uses", {}))
+                self._edges.append(
+                    (None, number, field["name"].lower(), "uses", {})
+                )
 
-        return self.nodes
-    
+        return nodes
+
     def _get_title(self, fields):
         """
         Get the title for the node.
         """
 
         for field in fields:
-            if field['field']['name'] == 'Title':
-                return field['text']
-            
+            if field["field"]["name"] == "Title":
+                return field["text"]
+
         return None
-    
+
     def _get_label(self, labels):
         """
         Get the label for the node.
         """
 
-        g = t = ''
+        g = t = ""
 
         for label in labels:
+            if label["field"]["name"] == "Component Type":
+                t = label["name"]
 
-            if label['field']['name'] == 'Component Type':
-                t = label['name']
+            if t == "Pipeline":
+                return "pipeline"
 
-            if t == 'Pipeline':
-                return 'pipeline'
+            if label["field"]["name"] == "Adapter Granularity":
+                g = label["name"]
 
-            if label['field']['name'] == 'Adapter Granularity':
-                g = label['name']
-            
         # to list if not empty
         concat = []
         if g:
@@ -382,23 +430,23 @@ class BioCypherMetaAdapter:
         if t:
             concat.append(t.lower())
 
-        concat.append('adapter')
+        concat.append("adapter")
 
         # concatenate
-        return ' '.join(concat)
-    
+        return " ".join(concat)
+
     def _extract_url(self, fields) -> str:
         """
         Extract the URL from the body of the item.
         """
 
         for field in fields:
-            if field['field']['name'] == 'Resource URL':
-                return field['text']
-        
+            if field["field"]["name"] == "Resource URL":
+                return field["text"]
+
         return None
-            
-    def get_edges(self):
+
+    def _process_edges(self):
         """
         Returns a list of edge tuples for edge types specified in the
         adapter constructor.
@@ -406,22 +454,22 @@ class BioCypherMetaAdapter:
 
         logger.info("Generating edges.")
 
+        edges = []
+
         for item in self._items:
+            uses = self._extract_uses(item["content"]["body"])
 
-            uses = self._extract_uses(item['content']['body'])
+            parent = "i" + str(item["content"]["number"])
 
-            parent = "i" + str(item['content']['number'])
-            
             for use in uses:
-
                 if not use:
                     continue
 
-                part = use.replace('#', 'i')
+                part = use.replace("#", "i")
 
-                self.edges.append((None, part, parent, 'part of', {}))
+                edges.append((None, part, parent, "part of", {}))
 
-        return self.edges
+        return edges
 
     def _extract_uses(self, body) -> list:
         """
@@ -431,16 +479,14 @@ class BioCypherMetaAdapter:
         if not body:
             return []
 
-        lines = body.split('\n')
+        lines = body.split("\n")
 
         for line in lines:
+            if line.startswith("Uses:"):
+                uses = line.split(": ")[1]
 
-            if line.startswith('Uses:'):
+                return uses.split(" ")
 
-                uses = line.split(': ')[1]
-
-                return uses.split(' ')
-            
         return []
 
     def get_node_count(self):
@@ -476,4 +522,3 @@ class BioCypherMetaAdapter:
             self.edge_fields = edge_fields
         else:
             self.edge_fields = [field for field in chain()]
-
