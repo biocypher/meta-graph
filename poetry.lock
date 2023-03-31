@@ -243,7 +243,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "03e6fdb2a9916146405f503929935771bd8fdcb86f6b3f8c9e8186754ffe24cc"
+content-hash = "891658d9548cab065e0f108cf0bae6531afdaed88dfc39afe9196659630678aa"
 
 [metadata.files]
 appdirs = [
@@ -251,8 +251,8 @@ appdirs = [
     {file = "appdirs-1.4.4.tar.gz", hash = "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41"},
 ]
 biocypher = [
-    {file = "biocypher-0.5.7-py3-none-any.whl", hash = "sha256:7e9a43bdc328bdbe2207d73ad8383be70b4da999a3021bf241bc75d4d773f2e3"},
-    {file = "biocypher-0.5.7.tar.gz", hash = "sha256:ad8ee0ebd03e37caec0030cdce2b54d5d86eca7d6593d2ac0c6aaa1e6027ed09"},
+    {file = "biocypher-0.5.8-py3-none-any.whl", hash = "sha256:415aed818f9fe65cb68c9371f2216c0478826f7ebfd60f08831acb13f79c70c8"},
+    {file = "biocypher-0.5.8.tar.gz", hash = "sha256:52529d8e375cfdc30bb17dfb088a375f2501434f6620c0d9f8d685a48675ad47"},
 ]
 certifi = [
     {file = "certifi-2022.12.7-py3-none-any.whl", hash = "sha256:4ad3232f5e926d6718ec31cfc1fcadfde020920e278684144551c91769c7bc18"},
