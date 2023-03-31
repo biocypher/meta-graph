@@ -57,9 +57,12 @@ class BioCypherMetaAdapter:
             node_types, node_fields, edge_types, edge_fields
         )
 
+        self._nodes = []
+        self._edges = []
+
         self._download_data()
-        self._edges = self._process_edges()
-        self._nodes = self._process_nodes()
+        self._process_nodes()
+        self._process_edges()
 
     def get_nodes(self) -> list:
         """
@@ -325,7 +328,8 @@ class BioCypherMetaAdapter:
         node_dict = {}
 
         for node in nodes:
-            node_dict[node["id"]] = node
+            issue_number = f'i{node["content"]["number"]}'
+            node_dict[issue_number] = node
 
         return node_dict
 
@@ -336,8 +340,6 @@ class BioCypherMetaAdapter:
         """
 
         logger.info("Generating nodes.")
-
-        nodes = []
 
         # Fields
         for field in self._fields:
@@ -352,7 +354,7 @@ class BioCypherMetaAdapter:
                 name = option["name"].lower()
                 type = field["name"].lower()
 
-                nodes.append((name, type, {}))
+                self._nodes.append((name, type, {}))
 
         # Individual cards
         for key, value in self._items.items():
@@ -381,7 +383,7 @@ class BioCypherMetaAdapter:
             url = value.get("Resource URL")
             number = "i" + str(value["content"]["number"])
 
-            nodes.append((number, label, {"name": title, "url": url}))
+            self._nodes.append((number, label, {"name": title, "url": url}))
 
         # Edges to fields
         for key, value in self._items.items():
@@ -404,8 +406,6 @@ class BioCypherMetaAdapter:
                 self._edges.append(
                     (None, number, field["name"].lower(), "uses", {})
                 )
-
-        return nodes
 
     def _get_label(self, labels):
         """
@@ -444,9 +444,7 @@ class BioCypherMetaAdapter:
 
         logger.info("Generating edges.")
 
-        edges = []
-
-        for key, value in self._items.items():
+        for value in self._items.values():
             uses = self._extract_uses(value["content"]["body"])
 
             parent = "i" + str(value["content"]["number"])
@@ -457,11 +455,22 @@ class BioCypherMetaAdapter:
 
                 part = use.replace("#", "i")
 
-                edges.append((None, part, parent, "part of", {}))
+                self._edges.append((None, part, parent, "part of", {}))
 
                 # also connect pipelines to the adapter's data type
+                if value.get("Component Type") == "Pipeline":
+                    if not self._items.get(part):
+                        logger.warning(f"Could not find {part} in items.")
+                        continue
 
-        return edges
+                    data_type = self._items.get(part).get("Data Type")
+
+                    if not data_type:
+                        continue
+
+                    self._edges.append(
+                        (None, parent, data_type.lower(), "uses", {})
+                    )
 
     def _extract_uses(self, body) -> list:
         """
