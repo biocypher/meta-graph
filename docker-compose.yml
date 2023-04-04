@@ -36,6 +36,9 @@ services:
           chmod +x /usr/import.sh
           /usr/import.sh
         fi
+        neo4j start
+        sleep 10
+        neo4j stop
     depends_on:
       build:
         condition: service_completed_successfully
