@@ -1,1 +1,0 @@
-echo "Extension config"
