@@ -20,3 +20,5 @@ required. To see the entire graph, you can run the following Cypher query:
 ```
 MATCH (n) RETURN n
 ```
+
+The online version is available at https://meta.biocypher.org/.
