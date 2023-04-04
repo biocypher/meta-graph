@@ -3,7 +3,7 @@ version: '3.3'
 services:
 
   build:
-    image: docker.io/andimajore/biocyper_base:python3.10
+    image: docker.io/slobentanzer/biocypher-base:1.0.0
     container_name: build
     volumes:
       - ./config/biocypher_docker_config.yaml:/usr/app/config/biocypher_config.yaml
@@ -14,7 +14,6 @@ services:
       - |
         cd /usr/app
         rm -rf data
-        poetry config virtualenvs.create false
         poetry install
         python3 create_knowledge_graph.py
 
