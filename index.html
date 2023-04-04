@@ -25,7 +25,7 @@
   <carousel class="deck container-fluid">
     <!--slide class="row-fluid">
       <div class="col-sm-3">
-        <h3>Welcome to the BioCypher Meta-Graph!</h3>
+        <h3>A Test Guide</h3>
         <p class="lead">Information</p>
 			<!dl>
 				
@@ -44,29 +44,94 @@
     
 
 
-   <h4>Welcome to the BioCypher Meta-Graph!</h4>
-   <div class="paragraph">
-<p>This database is an overview of the components (pipelines and the adapters
-they use) available in BioCypher, as collected on the GitHub projects board.
-It is simultaneously a demonstration of the output of a Docker Compose
-setup with a build stage using BioCypher and a deploy stage using the
-official Neo4j Docker image, as available via our project template.</p>
+   <h4>A Test Guide</h4>
+   
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>First Slide: Media</h3>
+    <br/>
+    <div>
+      <div class="imageblock" style="float: right;">
+<div class="content">
+<img src="https://avatars3.githubusercontent.com/u/201120" alt="201120" width="200">
 </div>
+</div>
+<div class="paragraph">
+<p>This is just a test guide.</p>
+</div>
+<div class="paragraph">
+<p>But it comes with a picture and a video:</p>
+</div>
+<div class="responsive-embed">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/V7f2tGsNSck?showinfo=0&controls=2&autohide=1" frameborder="0" allowfullscreen></iframe>
+</div>
+	</div>
+  </div>
+</slide>
 
 
 
 <slide class="row-fluid">
   <div class="col-sm-12">
-    <h3>How to read the meta-graph</h3>
+    <h3>Second Slide: Statements</h3>
     <br/>
     <div>
-      <div class="paragraph">
-<p>You can bring up the entire graph by querying every node in the graph:</p>
+      
+
+
+   <h4>Creating Data</h4>
+   <div class="paragraph">
+<p>The area below becomes a clickable statement.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="shell" lang="shell"><!--code class="shell language-shell"-->MATCH (n)
-RETURN n<!--/code--></pre>
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="shell" lang="shell"><!--code class="shell language-shell"-->CREATE (db:Database {name:"Neo4j"})
+RETURN db<!--/code--></pre>
+</div>
+</div>
+
+
+
+   <h4>Querying Data</h4>
+   <div class="paragraph">
+<p>We use a form field here:</p>
+</div>
+<input style="display:inline;width:30%;" value-for="name" class="form-control" value="Neo4j" size="40">
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (db:Database {name: $name})
+RETURN db<!--/code--></pre>
+</div>
+</div>
+	</div>
+  </div>
+</slide>
+
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>Third Slide: Links</h3>
+    <br/>
+    <div>
+      <div class="ulist">
+<ul>
+<li>
+<p><a href="https://neo4j.com/developer/cypher">Learn more about Cypher</a></p>
+</li>
+<li>
+<p><a help-topic='keys'>Help Keys</a></p>
+</li>
+<li>
+<p><a play-topic='https://guides.neo4j.com/'>Another Guide</a></p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="https://example.com"><img src="https://avatars3.githubusercontent.com/u/201120" alt="201120" width="100"></a>
 </div>
 </div>
 	</div>
