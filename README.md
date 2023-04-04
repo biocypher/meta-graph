@@ -12,10 +12,11 @@ cd meta-graph
 docker compose up
 ```
 
-After the graph has been built, you can access it at http://localhost:7474. The
-default username and password are `neo4j` and `neo4jpassword`; they can be 
-changed in the `docker-variables.env` file.  Please note that the graph is
-created in the `docker` database, not the default `neo4j` database, so you need
-to switch to the `docker` database the first time you log in.
+After the graph has been built, you can access it in the Neo4j Browser at
+http://localhost:7474. This version of the meta-graph is a read-only instance,
+so you will not be able to make changes to the graph. Authentication is not
+required. To see the entire graph, you can run the following Cypher query:
 
-We will make an online version of the graph available soon.
+```
+MATCH (n) RETURN n
+```
