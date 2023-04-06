@@ -328,6 +328,9 @@ class BioCypherMetaAdapter:
         node_dict = {}
 
         for node in nodes:
+            if not node["content"].get("number"):
+                continue
+
             issue_number = f'i{node["content"]["number"]}'
             node_dict[issue_number] = node
 
