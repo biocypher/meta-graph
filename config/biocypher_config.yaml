@@ -11,7 +11,7 @@ biocypher:
 
   tail_ontologies:
     bro:
-      url: https://github.com/biocypher/biomedical-resource-ontology/raw/v4.0.0/bro.owl
+      url: https://github.com/biocypher/biomedical-resource-ontology/raw/v0.4.1/bro.owl.ttl
       head_join_node: information content entity
       tail_join_node: Resource
 
