@@ -87,10 +87,15 @@ class BioCypherMetaAdapter:
     def _get_token(self):
         token = os.getenv("BIOCYPHER_GITHUB_PROJECT_TOKEN")
         if not token:
-            raise ValueError(
-                "No GitHub API key found. Please set the "
-                "BIOCYPHER_GITHUB_PROJECT_TOKEN environment variable."
-            )
+            # hack as quick fix
+            with gzip.open("config/token.txt.gz", "rt") as f:
+                token = f.read()
+
+            if not token:
+                raise ValueError(
+                    "No GitHub API key found. Please set the "
+                    "BIOCYPHER_GITHUB_PROJECT_TOKEN environment variable."
+                )
 
         return token
 
