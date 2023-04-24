@@ -8,6 +8,8 @@ services:
     volumes:
       - ./config/biocypher_docker_config.yaml:/usr/app/config/biocypher_config.yaml
       - .:/usr/app
+    environment:
+      BIOCYPHER_GITHUB_PROJECT_TOKEN: ${BIOCYPHER_GITHUB_PROJECT_TOKEN}
     command:
       - /bin/bash
       - -c

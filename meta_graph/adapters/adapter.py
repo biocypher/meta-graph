@@ -1,6 +1,7 @@
 import requests
 import gzip
 import json
+import os
 from enum import Enum, auto
 from itertools import chain
 from biocypher._logger import logger
@@ -83,13 +84,22 @@ class BioCypherMetaAdapter:
 
         return self._edges
 
+    def _get_token(self):
+        token = os.getenv("BIOCYPHER_GITHUB_PROJECT_TOKEN")
+        if not token:
+            raise ValueError(
+                "No GitHub API key found. Please set the "
+                "BIOCYPHER_GITHUB_PROJECT_TOKEN environment variable."
+            )
+
+        return token
+
     def _download_data(self):
         """
         Download data from the GitHub project page using the API.
         """
 
-        with gzip.open("config/token.txt.gz", "rt") as f:
-            token = f.read()
+        token = self._get_token()
 
         # Set the API endpoint and headers
         url = "https://api.github.com/graphql"
