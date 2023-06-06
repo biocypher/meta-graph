@@ -8,4 +8,3 @@ fi
 neo4j start
 sleep 10
 neo4j stop
-#cp /usr/app/html/index.html /usr/app/data/html/guide/index.html
