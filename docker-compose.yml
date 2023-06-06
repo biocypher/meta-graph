@@ -6,18 +6,14 @@ services:
     image: docker.io/slobentanzer/biocypher-base:1.0.0
     container_name: build
     volumes:
-      - ./config/biocypher_docker_config.yaml:/usr/app/config/biocypher_config.yaml
-      - .:/usr/app
+      - biocypher-meta-graph_data:/usr/app/data
+      - ./biocypher-log:/usr/app/biocypher-log
+      - .:/src/
     environment:
       BIOCYPHER_GITHUB_PROJECT_TOKEN: ${BIOCYPHER_GITHUB_PROJECT_TOKEN}
     command:
       - /bin/bash
-      - -c
-      - |
-        cd /usr/app
-        rm -rf data
-        poetry install
-        python3 create_knowledge_graph.py
+      - /src/scripts/build.sh
 
   import:
     image: neo4j:4.4-enterprise
@@ -27,19 +23,11 @@ services:
       NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
       FILL_DB_ON_STARTUP: "yes"
     volumes:
-      - ./data:/data
-      - ./data/build2neo/neo4j-admin-import-call.sh:/usr/import.sh
+      - biocypher-meta-graph_data:/data
+      - ./scripts/import.sh:/scripts/import.sh
     command:
       - /bin/bash
-      - -c
-      - |
-        if [ -f /usr/import.sh ]; then
-          chmod +x /usr/import.sh
-          /usr/import.sh
-        fi
-        neo4j start
-        sleep 10
-        neo4j stop
+      - /scripts/import.sh
     depends_on:
       build:
         condition: service_completed_successfully
@@ -48,14 +36,11 @@ services:
     image: neo4j:4.4-enterprise
     container_name: deploy
     volumes:
-      - ./data:/data
-      - ./html/index.html:/data/guides/index.html
+      - biocypher-meta-graph_data:/data
     environment:
       NEO4J_dbms_security_auth__enabled: "false"
       NEO4J_dbms_databases_default__to__read__only: "true"
       NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
-      # NEO4J_browser_remote__content__hostname__whitelist: "*"
-      # NEO4J_browser_post__connect__cmd: "play https://meta-graph-guide.web.app/index.html"
     ports:
       - "127.0.0.1:7474:7474"
       - "127.0.0.1:7687:7687"
@@ -63,9 +48,5 @@ services:
       import:
         condition: service_completed_successfully
 
-  # guide:
-  #   image: nginx:alpine
-  #   volumes:
-  #     - ./html:/usr/share/nginx/html
-  #   ports:
-  #     - "8080:80"
+volumes:
+  biocypher-meta-graph_data:
