@@ -6,7 +6,7 @@ services:
     image: docker.io/slobentanzer/biocypher-base:1.0.0
     container_name: build
     volumes:
-      - biocypher_data:/usr/app/data
+      - biocypher-meta-graph_data:/usr/app/data
       - ./biocypher-log:/usr/app/biocypher-log
       - .:/src/
     environment:
@@ -23,7 +23,7 @@ services:
       NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
       FILL_DB_ON_STARTUP: "yes"
     volumes:
-      - biocypher_data:/data
+      - biocypher-meta-graph_data:/data
       - ./scripts/import.sh:/scripts/import.sh
     command:
       - /bin/bash
@@ -36,7 +36,7 @@ services:
     image: neo4j:4.4-enterprise
     container_name: deploy
     volumes:
-      - biocypher_data:/data
+      - biocypher-meta-graph_data:/data
     environment:
       NEO4J_dbms_security_auth__enabled: "false"
       NEO4J_dbms_databases_default__to__read__only: "true"
@@ -50,7 +50,7 @@ services:
       import:
         condition: service_completed_successfully
 volumes:
-    biocypher_data:
+    biocypher-meta-graph_data:
   # guide:
   #   image: nginx:alpine
   #   volumes:
