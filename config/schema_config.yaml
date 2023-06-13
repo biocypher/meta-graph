@@ -61,9 +61,11 @@ pipeline:
 is part of:
   is_a: association
   represented_as: edge
+  use_id: false
   input_label: part of
 
 uses:
   is_a: association
   represented_as: edge
+  use_id: false
   input_label: uses
