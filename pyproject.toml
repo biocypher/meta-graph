@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "biocypher-project-template"
+name = "biocypher-meta-graph"
 version = "0.2.1"
-description = "Template for creating a BioCypher-driven knowledge graph"
+description = "BioCypher pipeline to visualise the components of existing and planned BioCypher pipelines"
 authors = [
     "Sebastian Lobentanzer <sebastian.lobentanzer@gmail.com>",
     "Andreas Maier <andreas.maier-1@uni-hamburg.de>",
