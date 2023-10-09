@@ -1,6 +1,10 @@
 # BioCypher meta-graph
+
+This is the simple Docker Compose project for the meta-graph. It only has one
+stage, since it does not need to allow read-only deployments.
+
 A read-only online version is available at https://meta.biocypher.org/. It is
-built from the `read_only` branch of this repository.
+built from the `main` branch of this repository.
 
 Information about pipelines and adapters available in BioCypher, as described on
 the GitHub Projects board for 
@@ -12,7 +16,8 @@ running. Then, you can run it using:
 ```
 git clone https://github.com/biocypher/meta-graph.git
 cd meta-graph
-docker compose up
+git checkout simple-docker
+docker compose up -d
 ```
 
 After the graph has been built, you can access it at http://localhost:7474. The
