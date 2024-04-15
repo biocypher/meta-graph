@@ -1,5 +1,13 @@
 # BioCypher meta-graph
 
+## Attention
+
+This branch is not up-to-date and may fail to build if you don't have project
+read permissions on the BioCypher GitHub (and an appropriate API key in your
+environment).
+
+## Description
+
 This is the simple Docker Compose project for the meta-graph. It only has one
 stage, since it does not need to allow read-only deployments.
 
