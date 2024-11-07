@@ -22,9 +22,6 @@ required. To see the entire graph, you can run the following Cypher query:
 MATCH (n) RETURN n
 ```
 
-The online version is available at https://meta.biocypher.org/. In the online
-version, no authentication is required (simply click on 'Connect').
-
 ## Docker Compose
 
 The docker-compose.yml file is used to build the graph. It uses the three stages
