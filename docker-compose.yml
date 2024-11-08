@@ -9,8 +9,6 @@ services:
       - biocypher-meta-graph_data:/usr/app/data
       - ./biocypher-log:/usr/app/biocypher-log
       - .:/src/
-    environment:
-      BIOCYPHER_GITHUB_PROJECT_TOKEN: ${BIOCYPHER_GITHUB_PROJECT_TOKEN}
     command:
       - /bin/bash
       - /src/scripts/build.sh
