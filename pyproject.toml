@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "biocypher-meta-graph"
-version = "0.2.2"
+version = "0.2.3"
 description = "BioCypher pipeline to visualise the components of existing and planned BioCypher pipelines"
 authors = [
     "Sebastian Lobentanzer <sebastian.lobentanzer@gmail.com>",
@@ -8,7 +8,6 @@ authors = [
 ]
 license = "MIT"
 readme = "README.md"
-package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
